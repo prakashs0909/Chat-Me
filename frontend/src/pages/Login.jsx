@@ -86,7 +86,7 @@ const Login = () => {
               </div>
             </div>
 
-            <button type="submit" className="btn bg-indigo-700 w-full" disabled={isLogin}>
+            <button type="submit" className="btn btn-primary w-full" disabled={isLogin}>
               {isLogin ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" />
@@ -101,7 +101,7 @@ const Login = () => {
           <div className="text-center">
             <p className="text-base-content/60">
               Don&apos;t have an account?{" "}
-              <Link to="/signup" className="link text-indigo-500">
+              <Link to="/signup" className="link link-primary">
                 Create account
               </Link>
             </p>
