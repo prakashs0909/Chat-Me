@@ -1,17 +1,16 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore.js";
 import { useEffect } from "react";
 import { Loader } from "lucide-react";
 
 const Privateroute = ({ children }) => {
-  // let token = sessionStorage.getItem("token")
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
-
+  const navigate = useNavigate();
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
-  console.log({ authUser });
+  // console.log({ authUser });
 
   if (isCheckingAuth && !authUser) {
     return (

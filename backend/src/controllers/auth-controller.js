@@ -98,6 +98,7 @@ export const updateProfile = async (req, res, next) => {
   try {
     let { profilePic } = req.body;
     let userId = req.user._id;
+    let prePublicId = req.user.profilePicPublicId;
 
     if (!profilePic) {
       return res.status(StatusCodes.NOT_FOUND).json({
@@ -106,14 +107,35 @@ export const updateProfile = async (req, res, next) => {
       });
     }
 
-    let uploadResponse = await cloudinary.uploader.upload(profilePic);
+    let uploadResponse = await cloudinary.uploader.upload(
+      profilePic,
+      { resource_type: "auto" },
+      (error, result) => {
+        if (error) {
+          console.error("Upload error:", error);
+        } else {
+          console.log("Upload result:", result);
+        }
+      },
+    );
     let updateUser = await UserModel.findByIdAndUpdate(
       userId,
       {
         profilePic: uploadResponse.secure_url,
+        profilePicPublicId: uploadResponse.public_id,
       },
-      { new: true },
+      { returnDocument: "after" },
     );
+
+    if (prePublicId) {
+      try {
+        await cloudinary.uploader.destroy(prePublicId, {
+          invalidate: true,
+        });
+      } catch (err) {
+        console.error("Error deleting old image:", err);
+      }
+    }
 
     res.status(StatusCodes.OK).json({
       success: true,
@@ -126,11 +148,7 @@ export const updateProfile = async (req, res, next) => {
 
 export const checkAuth = (req, res, next) => {
   try {
-    res.status(StatusCodes.OK).json({
-      success: true,
-      message: "User fetched successfully",
-      payload: req.user, // this is coming from middleware
-    });
+    res.status(StatusCodes.OK).json(req.user);
   } catch (error) {
     next(error);
   }
