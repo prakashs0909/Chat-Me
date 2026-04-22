@@ -10,11 +10,7 @@ export const getUserForSidebar = async (req, res, next) => {
       _id: { $ne: loggedInUserId },
     }).select("-password");
 
-    res.status(StatusCodes.OK).json({
-      success: true,
-      message: "User fetched successfully",
-      users: filteredUsers,
-    });
+    res.status(StatusCodes.OK).json(filteredUsers);
   } catch (error) {
     next(error);
   }

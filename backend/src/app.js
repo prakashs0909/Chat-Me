@@ -18,7 +18,7 @@ app.use(
 );
 
 app.use("/api/auth", errorHandler, authRoutes);
-app.use("/api/message", errorHandler, messageRoutes);
+app.use("/api/messages", errorHandler, messageRoutes);
 
 app.use(errorHandler);
 
