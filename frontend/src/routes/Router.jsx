@@ -22,11 +22,19 @@ export const routes = createBrowserRouter([
       },
       {
         path: "/signup",
-        element: <SignUp />,
+        element: (
+          <Privateroute allowPublic={true}>
+            <SignUp />
+          </Privateroute>
+        ),
       },
       {
         path: "/login",
-        element: <Login />,
+        element: (
+          <Privateroute allowPublic={true}>
+            <Login />
+          </Privateroute>
+        ),
       },
       {
         path: "/setting",
