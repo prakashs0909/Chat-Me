@@ -6,13 +6,16 @@ import { Loader } from "lucide-react";
 const Privateroute = ({ children, allowPublic = false }) => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
   const navigate = useNavigate();
+
   useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
-  
+    if (!allowPublic) {
+      checkAuth();
+    }
+  }, [checkAuth, allowPublic]);
+
   // console.log({ authUser });
 
-  if (isCheckingAuth ) {
+  if (isCheckingAuth && !allowPublic) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader className="size-10 animate-spin" />

@@ -32,8 +32,8 @@ export const useAuthStore = create((set, get) => ({
       const res = await axiosInstance.post("/auth/register", data);
       set({ authUser: res.data });
       toast.success("Account created successfully");
-      get().connectSocket();
       navigate("/");
+      get().connectSocket();
     } catch (error) {
       if (error.response && error.response.status === 409) {
         toast.error("User already exists");
@@ -99,11 +99,13 @@ export const useAuthStore = create((set, get) => ({
   connectSocket: () => {
     const { authUser } = get();
     if (!authUser || get().socket?.connected) return;
+    if (!authUser?._id) return;
 
     const socket = io(BASE_URL, {
       query: {
         userId: authUser._id,
       },
+      transports: ["websocket"],
     });
     socket.connect();
 
@@ -113,6 +115,7 @@ export const useAuthStore = create((set, get) => ({
       set({onlineUsers: userIds})
     })
   },
+
   disconnectSocket: () => {
     if (get().socket?.connected) get().socket?.disconnect();
   },

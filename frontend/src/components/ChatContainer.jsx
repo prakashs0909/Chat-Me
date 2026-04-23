@@ -25,7 +25,7 @@ const ChatContainer = () => {
     return () => {
       unlistenMessage();
     };
-  }, [selectedUser?._id, getMessages, listenMessage, unlistenMessage]);
+  }, [selectedUser._id, getMessages, listenMessage, unlistenMessage]);
 
   useEffect(() => {
     if (messageEndRef.current && messages) {
