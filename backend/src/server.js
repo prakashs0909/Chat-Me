@@ -1,10 +1,11 @@
+// import app from "./app.js";
 import { connectDB } from "./config/db-config.js";
 import { ENV_VAR } from "./config/env-var.js";
-import app from "./app.js";
+import { server } from "./config/socket.js";
 
 connectDB()
   .then(() => {
-    app.listen(ENV_VAR.PORT, (error) => {
+    server.listen(ENV_VAR.PORT, (error) => {
       if (error) {
         console.log("Error starting server:", error);
         return;

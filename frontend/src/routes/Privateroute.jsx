@@ -9,7 +9,7 @@ const Privateroute = ({ children, allowPublic = false }) => {
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
-
+  
   // console.log({ authUser });
 
   if (isCheckingAuth ) {

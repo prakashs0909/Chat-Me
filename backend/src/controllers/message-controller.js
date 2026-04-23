@@ -2,6 +2,7 @@ import UserModel from "../models/user-model.js";
 import { StatusCodes } from "http-status-codes";
 import MessageModel from "../models/message-model.js";
 import cloudinary from "../config/cloudinary-config.js";
+import { getReceiverSocketId, io } from "../config/socket.js";
 
 export const getUserForSidebar = async (req, res, next) => {
   try {
@@ -54,6 +55,11 @@ export const sendMessage = async (req, res, next) => {
     });
 
     await newMessage.save();
+
+    const receiverSocketId = getReceiverSocketId(receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("newMessage", newMessage);
+    }
 
     res.status(StatusCodes.OK).json(newMessage);
   } catch (error) {

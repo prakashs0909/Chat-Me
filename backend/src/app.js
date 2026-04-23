@@ -4,8 +4,7 @@ import authRoutes from "./routes/auth-routes.js";
 import messageRoutes from "./routes/message-routes.js";
 import { errorHandler } from "./middlewares/error-handle.js";
 import cors from "cors";
-
-const app = express();
+const app = express()
 
 app.use(cookieParser());
 app.use(express.json({ limit: '3mb' })); 
@@ -17,9 +16,12 @@ app.use(
   }),
 );
 
-app.use("/api/auth", errorHandler, authRoutes);
-app.use("/api/messages", errorHandler, messageRoutes);
+// app.use((req, res, next) => {
+//   console.log("Incoming:", req.method, req.url);
+//   next();
+// });
+app.use("/api/auth", authRoutes);
+app.use("/api/messages", messageRoutes);
 
 app.use(errorHandler);
-
-export default app;
+export default app
