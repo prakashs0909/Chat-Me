@@ -13,27 +13,49 @@ export const chatStore = create((set, get) => ({
   getUsers: async () => {
     set({ isUsersLoading: true });
     try {
-        const res = await axiosInstance.get("/messages/users");
-        console.log(res.data)
-        set({users: res.data})
+      const res = await axiosInstance.get("/messages/users");
+      set({ users: res.data });
     } catch (error) {
-      const message = error.response?.data?.message ||error.message || "Something went wrong";
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "Something went wrong";
       toast.error(message);
     } finally {
       set({ isUsersLoading: false });
     }
   },
 
-   getMessages: async (userId) => {
+  getMessages: async (userId) => {
     set({ isMessagesLoading: true });
     try {
       const res = await axiosInstance.get(`/messages/${userId}`);
       set({ messages: res.data });
     } catch (error) {
-      const message = error.response?.data?.message ||error.message || "Something went wrong";
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "Something went wrong";
       toast.error(message);
     } finally {
       set({ isMessagesLoading: false });
+    }
+  },
+
+  sendMessage: async (messageData) => {
+    const { selectedUser, messages } = get();
+    try {
+      const res = await axiosInstance.post(
+        `/messages/send/${selectedUser._id}`,
+        messageData,
+      );
+      set({ messages: [...messages, res.data] });
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "Something went wrong";
+      toast.error(message);
     }
   },
 
