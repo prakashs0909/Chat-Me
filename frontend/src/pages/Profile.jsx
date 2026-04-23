@@ -1,19 +1,22 @@
 import { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
-import { Camera, Mail, User } from "lucide-react";
+import { Camera, Mail, User, ChevronLeft } from "lucide-react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const { authUser, isUpdatingProfile, updateProfile } = useAuthStore();
   const [selectedImg, setSelectedImg] = useState(null);
+  const navigate = useNavigate();
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 3 * 1024 * 1024) { // 5MB limit
-    toast.error('File size exceeds the limit of 5MB');
-    return;
-  }
+    if (file.size > 3 * 1024 * 1024) {
+      // 5MB limit
+      toast.error("File size exceeds the limit of 5MB");
+      return;
+    }
 
     const reader = new FileReader();
 
@@ -30,12 +33,20 @@ const Profile = () => {
     <div className="h-screen pt-20">
       <div className="max-w-2xl mx-auto p-4 py-8">
         <div className="bg-base-300 rounded-xl p-6 space-y-8">
-          <div className="text-center">
-            <h1 className="text-2xl font-semibold ">Profile</h1>
-            <p className="mt-2">Your profile information</p>
+          <div className="flex flex-col ">
+            <button
+              type="btn"
+              className="flex items-center cursor-pointer"
+              onClick={()=>navigate("/")}
+            >
+              <ChevronLeft className="w-5 h-5 mt-0.5" />
+              back
+            </button>
+            <div className="text-center ">
+              <h1 className="text-2xl font-semibold ">Profile</h1>
+              <p className="mt-2">Your profile information</p>
+            </div>
           </div>
-
-          {/* avatar upload section */}
 
           <div className="flex flex-col items-center gap-4">
             <div className="relative">
@@ -66,7 +77,9 @@ const Profile = () => {
               </label>
             </div>
             <p className="text-sm text-zinc-400">
-              {isUpdatingProfile ? "Uploading..." : "Click the camera icon to update your photo"}
+              {isUpdatingProfile
+                ? "Uploading..."
+                : "Click the camera icon to update your photo"}
             </p>
           </div>
 
@@ -76,7 +89,9 @@ const Profile = () => {
                 <User className="w-4 h-4" />
                 Full Name
               </div>
-              <p className="px-4 py-3.5 bg-base-200 rounded-lg border">{authUser?.fullName}</p>
+              <p className="px-4 py-3.5 bg-base-200 rounded-lg border">
+                {authUser?.fullName}
+              </p>
             </div>
 
             <div className="space-y-1.5">
@@ -84,7 +99,9 @@ const Profile = () => {
                 <Mail className="w-4 h-4" />
                 Email Address
               </div>
-              <p className="px-4 py-3.5 bg-base-200 rounded-lg border">{authUser?.email}</p>
+              <p className="px-4 py-3.5 bg-base-200 rounded-lg border">
+                {authUser?.email}
+              </p>
             </div>
           </div>
 
@@ -104,7 +121,7 @@ const Profile = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Profile
+export default Profile;
