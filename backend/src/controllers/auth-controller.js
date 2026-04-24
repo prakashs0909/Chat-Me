@@ -50,7 +50,7 @@ export const register = async (req, res, next) => {
       // console.log("token", rawToken);
       await newUser.save();
 
-      let verifivationLink = `${ENV_VAR.SERVER_URL}/api/auth/verify-email/${rawToken}`;
+      let verifivationLink = `${ENV_VAR.CLIENT_URL}/verify-email/${rawToken}`;
 
       setTimeout(() => {
         sendVerificationLink(email, verifivationLink, next);
@@ -111,7 +111,7 @@ export const login = async (req, res, next) => {
 
         await user.save();
 
-        const verificationLink = `${ENV_VAR.SERVER_URL}/api/auth/verify-email/${rawToken}`;
+        const verificationLink = `${ENV_VAR.CLIENT_URL}/verify-email/${rawToken}`;
 
         setTimeout(() => {
           sendVerificationLink(user.email, verificationLink, next);

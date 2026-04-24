@@ -6,6 +6,7 @@ import Login from "../pages/Login";
 import Setting from "../pages/Setting";
 import Profile from "../pages/Profile";
 import Privateroute from "./Privateroute";
+import VerifyEmail from "../pages/VerifyEmail";
 
 export const routes = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ export const routes = createBrowserRouter([
             <Profile />
           </Privateroute>
         ),
+      },
+      {
+        path: "/verify-email/:rawid",
+        element: <VerifyEmail />
       },
     ],
   },

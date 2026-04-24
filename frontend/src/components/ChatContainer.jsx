@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { chatStore } from "../store/chatStore";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
 import MessageSkeleton from "./skeletons/MessageSkeleton";
 import { useAuthStore } from "../store/useAuthStore";
 import { formatMessageTime, getDateLabel } from "../lib/utils";
+import { X } from "lucide-react";
 
 const ChatContainer = () => {
   const {
@@ -16,6 +17,7 @@ const ChatContainer = () => {
     unlistenMessage,
   } = chatStore();
 
+  const [previewImage, setPreviewImage] = useState(null);
   const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);
 
@@ -28,7 +30,7 @@ const ChatContainer = () => {
     return () => {
       unlistenMessage();
     };
-  }, [selectedUser?._id, getMessages, listenMessage, unlistenMessage]);
+  }, [selectedUser?._id]);
 
   useEffect(() => {
     if (messageEndRef.current) {
@@ -40,11 +42,9 @@ const ChatContainer = () => {
     return messages.reduce((acc, message) => {
       const dateKey = new Date(message.createdAt).toDateString();
 
-      if (!acc[dateKey]) {
-        acc[dateKey] = [];
-      }
-
+      if (!acc[dateKey]) acc[dateKey] = [];
       acc[dateKey].push(message);
+
       return acc;
     }, {});
   }, [messages]);
@@ -99,19 +99,19 @@ const ChatContainer = () => {
                     </div>
                   </div>
 
-                  {/* <div className="chat-header mb-1">
-                    <time className="text-xs opacity-50 ml-1">
-                      {formatMessageTime(message.createdAt)}
-                    </time>
-                  </div> */}
-
                   <div className="chat-bubble flex flex-col">
                     {message.image && (
-                      <img
-                        src={message.image}
-                        alt="attachment"
-                        className="sm:max-w-[200px] rounded-md mb-2"
-                      />
+                      <div className="relative pb-2.5">
+                        <img
+                          src={message.image}
+                          alt="attachment"
+                          onClick={() => setPreviewImage(message.image)}
+                          className="sm:max-w-[200px] rounded-md mb-2 cursor-pointer hover:opacity-90 transition"
+                        />
+                        <span className="absolute bottom-0 right-0 text-[10px] opacity-60">
+                          {formatMessageTime(message.createdAt)}
+                        </span>
+                      </div>
                     )}
 
                     {message.text && (
@@ -129,6 +129,27 @@ const ChatContainer = () => {
           </div>
         ))}
       </div>
+
+      {previewImage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setPreviewImage(null)}
+        >
+          <button
+            onClick={() => setPreviewImage(null)}
+            className="absolute right-5 top-5 text-white text-3xl font-bold"
+          >
+            <X className="size-8"/>
+          </button>
+
+          <img
+            src={previewImage}
+            alt="preview"
+            onClick={(e) => e.stopPropagation()}
+            className="max-h-[90vh] max-w-[90vw] rounded-lg object-contain shadow-2xl"
+          />
+        </div>
+      )}
 
       <MessageInput />
     </div>

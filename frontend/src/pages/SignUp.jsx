@@ -13,7 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthImagePattern from "../components/AuthImagePattern";
 import toast from "react-hot-toast";
 
-const SERVER_URL = "http://localhost:5000";
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -166,11 +166,7 @@ const SignUp = () => {
             }
             className="flex items-center justify-center gap-3 w-full py-2.5 px-4 border border-gray-300 rounded-lg shadow-sm bg-white hover:bg-gray-50 transition"
           >
-            <img
-              src="./g-logo.png"
-              alt="Google"
-              className="w-5 h-5"
-            />
+            <img src="./g-logo.png" alt="Google" className="w-5 h-5" />
             <span className="text-sm font-medium text-gray-700">
               Continue with Google
             </span>

@@ -2,10 +2,14 @@ import passport from "passport";
 import GoogleStrategy from "passport-google-oauth20";
 import UserModel from "../models/user-model.js";
 import {GOOGLE, ENV_VAR} from "./env-var.js"
+import AppError from "../utils/app-error-util.js";
+import { StatusCodes } from "http-status-codes";
 
 const handleOAuthUser = async ({ provider, providerId, email, name, picture }) => {
   if (!email) {
-    throw new Error("Email not found from provider");
+    throw new AppError ("Email not found from provider",
+      StatusCodes.BAD_REQUEST
+    )
   }
 
   let user = await UserModel.findOne({ email });
