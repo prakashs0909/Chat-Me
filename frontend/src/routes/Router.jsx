@@ -38,7 +38,11 @@ export const routes = createBrowserRouter([
       },
       {
         path: "/setting",
-        element: <Setting />,
+        element: (
+          // <Privateroute >
+            <Setting />
+          // </Privateroute>
+        ),
       },
       {
         path: "/profile",
