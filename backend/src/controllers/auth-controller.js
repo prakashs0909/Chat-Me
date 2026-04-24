@@ -3,6 +3,9 @@ import UserModel from "../models/user-model.js";
 import { generateToken } from "../utils/jwt-util.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "../config/cloudinary-config.js";
+import { ENV_VAR } from "../config/env-var.js";
+import { sendVerificationLink } from "../utils/nodeMailer-util.js";
+import crypto from "crypto";
 
 export const register = async (req, res, next) => {
   try {
@@ -28,20 +31,41 @@ export const register = async (req, res, next) => {
     let salt = await bcrypt.genSalt(10);
     let hashedPassword = await bcrypt.hash(password, salt);
 
-    newUser = new UserModel({ fullName, email, password: hashedPassword });
+    const rawToken = crypto.randomBytes(32).toString("hex");
+
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(rawToken)
+      .digest("hex");
+
+    newUser = new UserModel({
+      fullName,
+      email,
+      password: hashedPassword,
+      verificationToken: hashedToken,
+      verificationTokenExpiry: Date.now() + 20 * 60 * 1000,
+    });
 
     if (newUser) {
-      generateToken(newUser._id, res);
+      // const rawToken = await generateToken(newUser._id, res);
+      // console.log("token", rawToken);
       await newUser.save();
+
+      let verifivationLink = `${ENV_VAR.CLIENT_URL}/api/auth/verify-email/${rawToken}`;
+
+      await sendVerificationLink(email, verifivationLink, next);
 
       res.status(StatusCodes.CREATED).json({
         success: true,
-        message: "User registered successfully",
+        message: "User registered successfully ans verification link send",
         user: {
           _id: newUser._id,
           fullName: newUser.fullName,
           email: newUser.email,
           profilePic: newUser.profilePic,
+          profilePicPublicId: newUser.profilePicPublicId,
+          isverified: newUser.isverified,
+          verificationToken: newUser.verificationToken,
         },
       });
     } else {
@@ -149,6 +173,42 @@ export const updateProfile = async (req, res, next) => {
 export const checkAuth = (req, res, next) => {
   try {
     res.status(StatusCodes.OK).json(req.user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const verifyEmail = async (req, res, next) => {
+  let { rawid } = req.params;
+  let hashToken = crypto.createHash("sha256").update(rawid).digest("hex");
+  try {
+    let user = await UserModel.findOne({ verificationToken: hashToken });
+    if (!user) {
+      res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "Invalid token",
+      });
+    }
+
+    if (user.verificationTokenExpiry < Date.now()) {
+      return next(
+        new AppError(
+          "Token Expired, Please request for new verification link",
+          410,
+        ),
+      );
+    }
+
+    user.isverified = true;
+    user.verificationToken = undefined;
+    user.verificationTokenExpiry = undefined;
+
+    await user.save();
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Email Successfully verified ",
+    });
   } catch (error) {
     next(error);
   }

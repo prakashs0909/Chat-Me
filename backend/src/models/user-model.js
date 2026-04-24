@@ -23,6 +23,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    isverified: { type: Boolean, default: false },
+    verificationToken: { type: String },
+    verificationTokenExpiry: { type: String },
   },
   { timestamps: true },
 );

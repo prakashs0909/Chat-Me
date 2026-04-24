@@ -31,9 +31,9 @@ export const useAuthStore = create((set, get) => ({
     try {
       const res = await axiosInstance.post("/auth/register", data);
       set({ authUser: res.data });
-      toast.success("Account created successfully");
-      navigate("/");
-      get().connectSocket();
+      toast.success("Verification link send to your mail");
+      navigate("/login");
+      // get().connectSocket();
     } catch (error) {
       if (error.response && error.response.status === 409) {
         toast.error("User already exists");
