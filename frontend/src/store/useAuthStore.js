@@ -30,10 +30,8 @@ export const useAuthStore = create((set, get) => ({
     set({ isSignUp: true });
     try {
       const res = await axiosInstance.post("/auth/register", data);
-      set({ authUser: res.data });
       toast.success("Verification link send to your mail");
       navigate("/login");
-      // get().connectSocket();
     } catch (error) {
       if (error.response && error.response.status === 409) {
         toast.error("User already exists");

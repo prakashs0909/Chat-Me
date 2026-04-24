@@ -43,21 +43,22 @@ export const register = async (req, res, next) => {
       email,
       password: hashedPassword,
       verificationToken: hashedToken,
-      verificationTokenExpiry: Date.now() + 20 * 60 * 1000,
+      verificationTokenExpiry: Date.now() + 1 * 60 * 1000,
     });
 
     if (newUser) {
-      // const rawToken = await generateToken(newUser._id, res);
       // console.log("token", rawToken);
       await newUser.save();
 
       let verifivationLink = `${ENV_VAR.CLIENT_URL}/api/auth/verify-email/${rawToken}`;
 
-      await sendVerificationLink(email, verifivationLink, next);
+      setTimeout(() => {
+        sendVerificationLink(email, verifivationLink, next);
+      }, 0);
 
       res.status(StatusCodes.CREATED).json({
         success: true,
-        message: "User registered successfully ans verification link send",
+        message: "User registered successfully and verification link send",
         user: {
           _id: newUser._id,
           fullName: newUser.fullName,
@@ -92,6 +93,37 @@ export const login = async (req, res, next) => {
     if (!isMatch) {
       return res.status(StatusCodes.NOT_FOUND).json({
         message: "Invalid credentials",
+      });
+    }
+
+    if (!user.isverified) {
+      const isExpired = user.verificationTokenExpiry < Date.now();
+      if (isExpired) {
+        const rawToken = crypto.randomBytes(32).toString("hex");
+
+        const hashedToken = crypto
+          .createHash("sha256")
+          .update(rawToken)
+          .digest("hex");
+
+        user.verificationToken = hashedToken;
+        user.verificationTokenExpiry = Date.now() + 10 * 60 * 1000;
+
+        await user.save();
+
+        const verificationLink = `${ENV_VAR.CLIENT_URL}/api/auth/verify-email/${rawToken}`;
+
+        setTimeout(() => {
+          sendVerificationLink(user.email, verificationLink, next);
+        }, 0);
+      }
+
+      return res.status(StatusCodes.FORBIDDEN).json({
+        success: false,
+        message: isExpired
+          ? "New verification link sent."
+          : "Please verify your email before login",
+        isExpired,
       });
     }
 
