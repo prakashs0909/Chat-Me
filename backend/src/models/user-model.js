@@ -13,7 +13,9 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: function () {
+        return this.authProvider === "local";
+      },
     },
     profilePic: {
       type: String,
@@ -23,7 +25,16 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    isverified: { type: Boolean, default: false },
+    authProvider: {
+      type: String,
+      enum: ["local", "google"],
+      default: "local",
+    },
+    providerId: { type: String },
+    isverified: {
+      type: Boolean,
+      default: false,
+    },
     verificationToken: { type: String },
     verificationTokenExpiry: { type: String },
   },

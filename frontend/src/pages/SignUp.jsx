@@ -13,6 +13,8 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthImagePattern from "../components/AuthImagePattern";
 import toast from "react-hot-toast";
 
+const SERVER_URL = "http://localhost:5000";
+
 const SignUp = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -41,7 +43,7 @@ const SignUp = () => {
 
     const success = validateform();
 
-    if(success === true) signup(formData, navigate)
+    if (success === true) signup(formData, navigate);
   };
 
   return (
@@ -151,6 +153,28 @@ const SignUp = () => {
               )}
             </button>
           </form>
+
+          <div className="flex items-center my-6">
+            <div className="flex-grow border-t border-gray-300"></div>
+            <span className="mx-4 text-gray-500 text-sm font-medium">OR</span>
+            <div className="flex-grow border-t border-gray-300"></div>
+          </div>
+
+          <button
+            onClick={() =>
+              (window.location.href = `${SERVER_URL}/api/auth/google`)
+            }
+            className="flex items-center justify-center gap-3 w-full py-2.5 px-4 border border-gray-300 rounded-lg shadow-sm bg-white hover:bg-gray-50 transition"
+          >
+            <img
+              src="./g-logo.png"
+              alt="Google"
+              className="w-5 h-5"
+            />
+            <span className="text-sm font-medium text-gray-700">
+              Continue with Google
+            </span>
+          </button>
 
           <div className="text-center">
             <p className="text-base-content/60">

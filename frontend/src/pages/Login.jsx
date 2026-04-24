@@ -4,6 +4,8 @@ import AuthImagePattern from "../components/AuthImagePattern";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare } from "lucide-react";
 
+const SERVER_URL = "http://localhost:5000";
+
 const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -52,7 +54,9 @@ const Login = () => {
                   className={`input input-bordered w-full pl-10`}
                   placeholder="you@example.com"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -70,7 +74,9 @@ const Login = () => {
                   className={`input input-bordered w-full pl-10`}
                   placeholder="••••••••"
                   value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                 />
                 <button
                   type="button"
@@ -86,7 +92,11 @@ const Login = () => {
               </div>
             </div>
 
-            <button type="submit" className="btn btn-primary w-full" disabled={isLogin}>
+            <button
+              type="submit"
+              className="btn btn-primary w-full"
+              disabled={isLogin}
+            >
               {isLogin ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" />
@@ -97,6 +107,28 @@ const Login = () => {
               )}
             </button>
           </form>
+
+          <div className="flex items-center my-6">
+            <div className="flex-grow border-t border-gray-300"></div>
+            <span className="mx-4 text-gray-500 text-sm">OR</span>
+            <div className="flex-grow border-t border-gray-300"></div>
+          </div>
+
+          <button
+            onClick={() =>
+              (window.location.href = `${SERVER_URL}/api/auth/google`)
+            }
+            className="flex items-center justify-center gap-3 w-full py-2.5 px-4 border border-gray-300 rounded-lg shadow-sm bg-white hover:bg-gray-50 transition"
+          >
+            <img
+              src="./g-logo.png"
+              alt="Google"
+              className="w-5 h-5"
+            />
+            <span className="text-sm font-medium text-gray-700">
+              Log in with Google
+            </span>
+          </button>
 
           <div className="text-center">
             <p className="text-base-content/60">
@@ -112,10 +144,12 @@ const Login = () => {
       {/* Right Side - Image/Pattern */}
       <AuthImagePattern
         title={"Welcome back!"}
-        subtitle={"Sign in to continue your conversations and catch up with your messages."}
+        subtitle={
+          "Sign in to continue your conversations and catch up with your messages."
+        }
       />
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

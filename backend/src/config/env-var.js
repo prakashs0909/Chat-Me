@@ -3,6 +3,7 @@ dotenv.config({ quiet: true });
 
 export const ENV_VAR = {
   PORT: process.env.PORT,
+  SERVER_URL: process.env.SERVER_URL,
   CLIENT_URL: process.env.CLIENT_URL,
   MONGO_URI: process.env.MONGO_URI,
   JWT_SECRET_KEY: process.env.JWT_SECRET,
@@ -21,4 +22,9 @@ export const NODEMAILER = {
   SERVICE: process.env.NODEMAILER_SERVICE,
   SECURE: process.env.NODEMAILER_SECURE,
   PORT: process.env.NODEMAILER_PORT,
+}
+
+export const GOOGLE ={
+  CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
 }
