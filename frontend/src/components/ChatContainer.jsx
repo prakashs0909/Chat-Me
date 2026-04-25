@@ -101,15 +101,41 @@ const ChatContainer = () => {
 
                   <div className="chat-bubble flex flex-col">
                     {message.image && (
-                      <div className="relative pb-2.5">
+                      <div className="relative overflow-hidden rounded-md pb-2.5">
                         <img
                           src={message.image}
                           alt="attachment"
-                          onClick={() => setPreviewImage(message.image)}
-                          className="sm:max-w-[200px] rounded-md mb-2 cursor-pointer hover:opacity-90 transition"
+                          onClick={() =>
+                            !message.isSending && setPreviewImage(message.image)
+                          }
+                          className={`sm:max-w-[240px] rounded-md mb-2 cursor-pointer transition ${
+                            message.isSending
+                              ? "opacity-70"
+                              : "hover:opacity-90"
+                          }`}
                         />
-                        <span className="absolute bottom-0 right-0 text-[10px] opacity-60">
-                          {formatMessageTime(message.createdAt)}
+
+                        {message.isSending && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-md">
+                            <div className="relative flex items-center justify-center">
+                              <span className="loading loading-spinner loading-lg text-emerald-500"></span>
+                              <X className="absolute size-5 text-white" />
+                            </div>
+                          </div>
+                        )}
+
+                        {message.isFailed && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-md">
+                            <span className="text-xs text-red-300 font-semibold">
+                              Failed
+                            </span>
+                          </div>
+                        )}
+
+                        <span className="absolute bottom-2 right-2 text-[10px] text-white bg-black/30 px-1.5 py-0.5 rounded">
+                          {message.isSending
+                            ? "Sending..."
+                            : formatMessageTime(message.createdAt)}
                         </span>
                       </div>
                     )}
@@ -139,7 +165,7 @@ const ChatContainer = () => {
             onClick={() => setPreviewImage(null)}
             className="absolute right-5 top-5 text-white text-3xl font-bold"
           >
-            <X className="size-8"/>
+            <X className="size-8" />
           </button>
 
           <img

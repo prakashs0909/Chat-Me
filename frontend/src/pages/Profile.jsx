@@ -28,6 +28,7 @@ const Profile = () => {
       await updateProfile({ profilePic: base64Image });
     };
   };
+  console.log(authUser.profilePic)
 
   return (
     <div className="h-screen pt-20">
@@ -47,7 +48,7 @@ const Profile = () => {
           <div className="flex flex-col items-center gap-4">
             <div className="relative">
               <img
-                src={selectedImg || authUser.profilePic || "/profile.png"}
+                src={selectedImg || (authUser?.profilePic ? authUser.profilePic : "/profile.png")}
                 alt="Profile"
                 className="size-32 rounded-full object-cover border-4 "
               />

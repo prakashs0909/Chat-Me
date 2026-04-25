@@ -32,6 +32,8 @@ const MessageInput = () => {
     e.preventDefault();
     if (!text.trim() && !imagePreview) return;
 
+    removeImage();
+
     try {
       await sendMessage({
         text: text.trim(),

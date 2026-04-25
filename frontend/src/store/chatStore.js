@@ -44,18 +44,41 @@ export const chatStore = create((set, get) => ({
 
   sendMessage: async (messageData) => {
     const { selectedUser, messages } = get();
+    const authUser = useAuthStore.getState().authUser;
+
+    const tempId = `temp-${Date.now()}`;
+
+    const tempMessage = {
+      _id: tempId,
+      senderId: authUser._id,
+      receiverId: selectedUser._id,
+      text: messageData.text || "",
+      image: messageData.image || null,
+      createdAt: new Date().toISOString(),
+      isSending: true,
+    };
+
+    set({
+      messages: [...get().messages, tempMessage],
+    });
     try {
       const res = await axiosInstance.post(
         `/messages/send/${selectedUser._id}`,
         messageData,
       );
-      set({ messages: [...messages, res.data] });
+      set({
+        messages: get().messages.map((msg) =>
+          msg._id === tempId ? res.data : msg,
+        ),
+      });
     } catch (error) {
-      const message =
-        error.response?.data?.message ||
-        error.message ||
-        "Something went wrong";
-      toast.error(message);
+      set({
+        messages: get().messages.map((msg) =>
+          msg._id === tempId
+            ? { ...msg, isSending: false, isFailed: true }
+            : msg,
+        ),
+      });
     }
   },
 
