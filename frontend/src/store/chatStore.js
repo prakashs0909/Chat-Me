@@ -56,6 +56,7 @@ export const chatStore = create((set, get) => ({
       image: messageData.image || null,
       createdAt: new Date().toISOString(),
       isSending: true,
+      isFailed: false,
     };
 
     set({
