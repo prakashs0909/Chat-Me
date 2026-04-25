@@ -40,6 +40,7 @@ export const sendMessage = async (req, res, next) => {
     let { text, image } = req.body;
     let { id: receiverId } = req.params;
     let senderId = req.user._id;
+    console.log(req.user._id)
 
     let imageUrl;
     if (image) {
