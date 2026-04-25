@@ -132,7 +132,7 @@ const ChatContainer = () => {
                           </div>
                         )}
 
-                        <span className="absolute bottom-2 right-2 text-[10px] text-white bg-black/30 px-1.5 py-0.5 rounded">
+                        <span className="absolute bottom-0 right-0 text-[10px] opacity-60">
                           {message.isSending
                             ? "Sending..."
                             : formatMessageTime(message.createdAt)}

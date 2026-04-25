@@ -79,6 +79,7 @@ export const chatStore = create((set, get) => ({
             : msg,
         ),
       });
+      console.log(error.message)
     }
   },
 
