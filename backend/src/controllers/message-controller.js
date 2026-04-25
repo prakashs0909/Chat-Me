@@ -40,14 +40,9 @@ export const sendMessage = async (req, res, next) => {
     let { text, image } = req.body;
     let { id: receiverId } = req.params;
     let senderId = req.user._id;
-    console.log(req.user._id);
-
     let imageUrl;
     if (image) {
       try {
-        console.log("IMAGE START:", image?.slice(0, 50));
-        console.log("IMAGE LENGTH:", image?.length);
-
         const uploadResponse = await cloudinary.uploader.upload(image, {
           resource_type: "auto",
         });
