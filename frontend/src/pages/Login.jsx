@@ -4,7 +4,7 @@ import AuthImagePattern from "../components/AuthImagePattern";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare } from "lucide-react";
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+const SERVER_URL = import.meta.env.MODE === "development" ? "http://localhost:5000" : "/";
 
 const Login = () => {
   const navigate = useNavigate();
